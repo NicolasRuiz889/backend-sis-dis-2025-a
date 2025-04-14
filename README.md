@@ -6,7 +6,7 @@ Este repositorio se encarga de la lógica de negocio y los servicios que compone
 
 - **Estructura de Carpetas:** Organización de módulos, controladores, servicios y modelos.
 - **Configuración de Entorno:** Variables de entorno, puertos y parámetros de ejecución.
-- **Dependencias Clave:** Frameworks y librerías utilizadas (por ejemplo, Express, Django, Laravel, etc.).
+- **Dependencias Clave:** Frameworks y librerías utilizadas (springboot y java).
 - **Tests Unitarios:** Conjunto de pruebas para garantizar la estabilidad y calidad del código.
 - **Endpoints de la API:** Detalle de las rutas, métodos y formatos de datos.
 
