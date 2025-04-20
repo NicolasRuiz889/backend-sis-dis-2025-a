@@ -6,11 +6,11 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "programs")
 @Data
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Program {
 
     @Id
@@ -36,6 +36,7 @@ public class Program {
     @Column(name = "degree_awarded")
     private String degreeAwarded;
 
+    @Builder.Default
     @Column(name = "status", nullable = false)
     private Boolean status = true;
 

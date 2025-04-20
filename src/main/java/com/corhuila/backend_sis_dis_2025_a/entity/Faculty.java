@@ -6,11 +6,11 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "faculties")
 @Data
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Faculty {
 
     @Id
@@ -24,7 +24,12 @@ public class Faculty {
     @Column(name = "description", nullable = false)
     private String description;
     
+    @Builder.Default
     @Column(name = "status", nullable = false)
     private Boolean status = true;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "campus_id", nullable = false)
+    private Campus campus;
 
 }
