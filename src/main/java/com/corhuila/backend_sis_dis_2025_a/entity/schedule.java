@@ -1,32 +1,35 @@
 package com.corhuila.backend_sis_dis_2025_a.entity;
 
+import lombok.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.time.LocalTime;
+
+
 
 @Entity
-@Table(name = "schedule")
+@Table(name = "horario")
 @Data   
 @Builder
-@Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 
-public class schedule {
+
+public class Schedule {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
 
-    private Long id;
+@Column(name = "day_of_week", nullable = false)
+    private String dayOfWeek;
 
-    private String dia;
+@Column(name = "start_time", nullable = false)
+    private LocalTime startTime;
 
-    private String horaInicio;
+    @Column(name = "end_time", nullable = false)
+    private LocalTime endTime;
 
-    private String horaFin;
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 }

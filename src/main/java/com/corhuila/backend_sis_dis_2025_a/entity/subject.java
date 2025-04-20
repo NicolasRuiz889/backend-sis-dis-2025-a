@@ -8,16 +8,18 @@ import jakarta.persistence.*;
 @Table(name = "subject")
 @Data
 @Builder
-@Getter
-@Setter
+
 @AllArgsConstructor
 @NoArgsConstructor
 
 public class Subject {
 
     @Id
+    @Column(name = "program_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
  private Long id;
+
+ 
 
 @Column(name = "nombre_asignatura")
     private String name;
@@ -32,3 +34,4 @@ public class Subject {
 @JoinColumn(name = "programa_id")
     private Program program;
 }
+
