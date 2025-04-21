@@ -2,6 +2,8 @@ package com.corhuila.backend_sis_dis_2025_a.entity;
 
 
 
+import com.corhuila.backend_sis_dis_2025_a.dto.GroupDto.GroupDtoBuilder;
+
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -10,7 +12,10 @@ import lombok.*;
 @Entity
 @Table(name = "groups")
 @Data
-@Builder
+@Builderpublic GroupDtoBuilder quota(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'quota'");
+    }
 @AllArgsConstructor
 @NoArgsConstructor
 

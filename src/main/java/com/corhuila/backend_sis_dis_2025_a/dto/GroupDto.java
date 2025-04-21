@@ -8,7 +8,8 @@ import lombok.*;
 @Builder
 public class GroupDto {
     private Long id;
-    private String name;
+    private String code;
     private Integer quota;
     private String status;
+    
 }
