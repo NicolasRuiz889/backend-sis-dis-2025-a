@@ -15,28 +15,28 @@ import java.util.stream.Collectors;
 public class AgendaServiceImpl implements IAgendaService {
 
     private final AgendaRepository repo;
-    private final PersonaRepository personaRepo;
+    //private final PersonRepository personRepo;
     private final ActivityRepository actRepo;
-    private final HorarioRepository horRepo;
+    //private final ScheduleRepository ScheduleRepo;
 
     private AgendaDto toDto(Agenda e) {
         return AgendaDto.builder()
                 .id(e.getId())
-                .personaId(e.getPersona().getId())
+        //        .personId(e.getPerson().getId())
                 .activityId(e.getActivity().getId())
-                .horarioId(e.getHorario().getId())
+        //        .ScheduleId(e.getSchedule().getId())
                 .build();
     }
 
     private Agenda toEntity(AgendaDto d) {
         return Agenda.builder()
                 .id(d.getId())
-                .persona(personaRepo.findById(d.getPersonaId())
-                        .orElseThrow(() -> new RuntimeException("Persona not found")))
+                //.Person(personRepo.findById(d.getPersonId())
+                        //.orElseThrow(() -> new RuntimeException("Persona not found")))
                 .activity(actRepo.findById(d.getActivityId())
                         .orElseThrow(() -> new RuntimeException("Activity not found")))
-                .horario(horRepo.findById(d.getHorarioId())
-                        .orElseThrow(() -> new RuntimeException("Horario not found")))
+                //.schedule(ScheduleRepo.findById(d.getScheduleId())
+                //        .orElseThrow(() -> new RuntimeException("Horario not found")))
                 .build();
     }
 
@@ -46,12 +46,12 @@ public class AgendaServiceImpl implements IAgendaService {
     @Override public AgendaDto update(Long id, AgendaDto dto) {
         Agenda e = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Agenda not found"));
-        e.setPersona(personaRepo.findById(dto.getPersonaId())
-                .orElseThrow(() -> new RuntimeException("Persona not found")));
+        //e.setPerson(personRepo.findById(dto.getPersonId())
+        //        .orElseThrow(() -> new RuntimeException("Persona not found")));
         e.setActivity(actRepo.findById(dto.getActivityId())
                 .orElseThrow(() -> new RuntimeException("Activity not found")));
-        e.setHorario(horRepo.findById(dto.getHorarioId())
-                .orElseThrow(() -> new RuntimeException("Horario not found")));
+        //e.setSchedule(ScheduleRepo.findById(dto.getScheduleId())
+        //        .orElseThrow(() -> new RuntimeException("Horario not found")));
         return toDto(repo.save(e));
     }
     @Override public void delete(Long id) { repo.deleteById(id); }

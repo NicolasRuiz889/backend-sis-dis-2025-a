@@ -8,8 +8,8 @@ import lombok.*;
 @Builder
 public class AgendaDto {
     private Long id;
-    private Long personaId;
+    private Long personId;
     private Long activityId;
-    private Long horarioId;
+    private Long scheduleId;
 }
 
