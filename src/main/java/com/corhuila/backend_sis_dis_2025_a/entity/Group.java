@@ -1,38 +1,26 @@
 package com.corhuila.backend_sis_dis_2025_a.entity;
 
-
-
-import com.corhuila.backend_sis_dis_2025_a.dto.GroupDto.GroupDtoBuilder;
-
 import jakarta.persistence.*;
-
 import lombok.*;
 
-
 @Entity
-@Table(name = "groups")
+@Table(name = "grupo")
 @Data
-@Builderpublic GroupDtoBuilder quota(Object object) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'quota'");
-    }
-@AllArgsConstructor
 @NoArgsConstructor
-
+@AllArgsConstructor
+@Builder
 public class Group {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "code", nullable = false, unique = true)
-    private String code;
-
-
-@Column(name = "description")
-    private String description;
+    @Column(name = "group_number")
+    private String groupNumber;
 
     @ManyToOne
-    @JoinColumn(name = "subject_id")
+    @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 }
+
+

@@ -9,7 +9,8 @@ import lombok.*;
 public class GroupDto {
     private Long id;
     private String code;
-    private Integer quota;
-    private String status;
-    
+    private String period;
+    private Boolean status;
+    private Long subjectId;
 }
+
