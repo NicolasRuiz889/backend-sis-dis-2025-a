@@ -3,8 +3,8 @@ package com.corhuila.backend_sis_dis_2025_a.service.impl;
 import com.corhuila.backend_sis_dis_2025_a.dto.ScheduleDto;
 import com.corhuila.backend_sis_dis_2025_a.entity.Group;
 import com.corhuila.backend_sis_dis_2025_a.entity.Schedule;
-import com.corhuila.backend_sis_dis_2025_a.repository.GroupRepository;
-import com.corhuila.backend_sis_dis_2025_a.repository.ScheduleRepository;
+import com.corhuila.backend_sis_dis_2025_a.repository.IGroupRepository;
+import com.corhuila.backend_sis_dis_2025_a.repository.IScheduleRepository;
 import com.corhuila.backend_sis_dis_2025_a.service.IScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements IScheduleService {
 
-    private final ScheduleRepository repo;
-    private final GroupRepository groupRepo;
+    private final IScheduleRepository repo;
+    private final IGroupRepository groupRepo;
 
     private ScheduleDto toDto(Schedule e) {
         return ScheduleDto.builder()
@@ -25,12 +25,12 @@ public class ScheduleServiceImpl implements IScheduleService {
                 .dayOfWeek(e.getDayOfWeek())
                 .startTime(e.getStartTime())
                 .endTime(e.getEndTime())
-                .groupId(e.getGroup() != null ? e.getGroup().getId() : null)
+                .group(e.getGroup() != null ? e.getGroup().getId() : null)
                 .build();
     }
 
     private Schedule toEntity(ScheduleDto d) {
-        Group group = groupRepo.findById(d.getGroupId())
+        Group group = groupRepo.findById(d.getGroup())
                 .orElseThrow(() -> new RuntimeException("Group not found"));
 
         return Schedule.builder()
@@ -56,7 +56,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         schedule.setStartTime(dto.getStartTime());
         schedule.setEndTime(dto.getEndTime());
 
-        Group group = groupRepo.findById(dto.getGroupId())
+        Group group = groupRepo.findById(dto.getGroup())
                 .orElseThrow(() -> new RuntimeException("Group not found"));
 
         schedule.setGroup(group);

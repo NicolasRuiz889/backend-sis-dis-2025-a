@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/api/subjects")
 @RequiredArgsConstructor
 public class SubjectController {
-    
+
     private final ISubjectService service;
 
     @PostMapping
@@ -39,3 +39,4 @@ public class SubjectController {
         service.delete(id);
     }
 }
+

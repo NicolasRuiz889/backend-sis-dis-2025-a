@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/api/schedules")
 @RequiredArgsConstructor
 public class ScheduleController {
-    
+
     private final IScheduleService service;
 
     @PostMapping

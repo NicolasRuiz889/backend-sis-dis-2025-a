@@ -1,32 +1,33 @@
 package com.corhuila.backend_sis_dis_2025_a.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "subject")  
+@Table(name = "subjects")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_asignatura")  
+    @Column(name = "id_asignatura")
     private Long id;
 
-    @Column(name = "nombre_asignatura")  
+    @Column(name = "nombre_asignatura", nullable = false)
     private String name;
 
-    @Column(name = "hora_semanal")  
-    private int weeklyHours;  
+    @Column(name = "hora_semanal", nullable = false)
+    private Integer weeklyHours;
 
-    @Column(name = "hora_semestral")  
-    private int semesterHours;
+    @Column(name = "hora_semestral", nullable = false)
+    private Integer semesterHours;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "programa_id")  
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "programa_id", nullable = false)
     private Program program;
+
 }
 
