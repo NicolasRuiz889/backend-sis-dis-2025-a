@@ -42,6 +42,8 @@ public class CampusServiceImpl implements ICampusService {
     @Override public CampusDto create(CampusDto dto) {
         return toDto(repo.save(toEntity(dto)));
     }
+
+    
     @Override public CampusDto update(Long id, CampusDto dto) {
         Campus e = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Campus not found"));
