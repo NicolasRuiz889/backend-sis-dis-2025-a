@@ -25,12 +25,12 @@ public class ScheduleServiceImpl implements IScheduleService {
                 .dayOfWeek(e.getDayOfWeek())
                 .startTime(e.getStartTime())
                 .endTime(e.getEndTime())
-                .group(e.getGroup() != null ? e.getGroup().getId() : null)
+                .groupId(e.getGroup().getId())
                 .build();
     }
 
     private Schedule toEntity(ScheduleDto d) {
-        Group group = groupRepo.findById(d.getGroup())
+        Group group = groupRepo.findById(d.getGroupId())
                 .orElseThrow(() -> new RuntimeException("Group not found"));
 
         return Schedule.builder()
@@ -56,11 +56,10 @@ public class ScheduleServiceImpl implements IScheduleService {
         schedule.setStartTime(dto.getStartTime());
         schedule.setEndTime(dto.getEndTime());
 
-        Group group = groupRepo.findById(dto.getGroup())
-                .orElseThrow(() -> new RuntimeException("Group not found"));
+        schedule.setGroup(groupRepo.findById(dto.getGroupId())
+                .orElseThrow(() -> new RuntimeException("Group not found")));
 
-        schedule.setGroup(group);
-
+       
         return toDto(repo.save(schedule));
     }
 
@@ -77,7 +76,9 @@ public class ScheduleServiceImpl implements IScheduleService {
 
     @Override
     public List<ScheduleDto> findAll() {
-        return repo.findAll().stream().map(this::toDto).collect(Collectors.toList());
+        return repo.findAll().stream()
+        .map(this::toDto)
+        .collect(Collectors.toList());
     }
 }
 

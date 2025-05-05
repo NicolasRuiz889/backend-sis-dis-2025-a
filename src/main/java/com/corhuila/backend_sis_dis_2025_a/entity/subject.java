@@ -13,20 +13,27 @@ public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_asignatura")
+    @Column(name = "id_subject")
     private Long id;
 
-    @Column(name = "nombre_asignatura", nullable = false)
+    @Column(name = "subject_code",  nullable = false , unique = true)
+    private String code;
+
+    @Column(name = "subject_name", nullable = false)
     private String name;
 
-    @Column(name = "hora_semanal", nullable = false)
-    private Integer weeklyHours;
+    @Column(name = "credits", nullable = false)
+    private Integer credits;
 
-    @Column(name = "hora_semestral", nullable = false)
-    private Integer semesterHours;
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Builder.Default
+    @Column(name = "status", nullable = false)
+    private Boolean status = true;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "programa_id", nullable = false)
+    @JoinColumn(name = "program_id", nullable = false)
     private Program program;
 
 }
