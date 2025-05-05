@@ -16,16 +16,16 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "dia_semana", nullable = false)
+    @Column(name = "day_week", nullable = false)
     private String dayOfWeek;
 
-    @Column(name = "hora_inicio", nullable = false)
+    @Column(name = "star_time", nullable = false)
     private LocalTime startTime;
 
-    @Column(name = "hora_fin", nullable = false)
+    @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "id_grupo", nullable = false)
+    @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 }
