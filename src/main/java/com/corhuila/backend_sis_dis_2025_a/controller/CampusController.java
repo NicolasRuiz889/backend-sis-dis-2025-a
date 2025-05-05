@@ -14,8 +14,9 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
-@RequestMapping("/api/capuses")
+@RequestMapping("/api/campuses")
 @RequiredArgsConstructor
 public class CampusController {
 
