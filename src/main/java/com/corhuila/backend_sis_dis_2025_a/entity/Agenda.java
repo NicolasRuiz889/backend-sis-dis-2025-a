@@ -5,25 +5,25 @@ import lombok.*;
 
 @Entity
 @Table(name = "agenda")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Getter
+@Setter
 public class Agenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idAgenda;
 
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "person_id", nullable = false)
-    //private Person person;
+    @ManyToOne
+    @JoinColumn(name = "persona_id", referencedColumnName = "idPersona")
+    private Persona persona;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "activity_id", nullable = false)
-    private Activity activity;
+    @ManyToOne
+    @JoinColumn(name = "actividad_id", referencedColumnName = "idActividad")
+    private Actividad actividad;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id", nullable = false)
-    private schedule schedule;
+    @ManyToOne
+    @JoinColumn(name = "horario_id", referencedColumnName = "idHorario")
+    private Horario horario;
 }
