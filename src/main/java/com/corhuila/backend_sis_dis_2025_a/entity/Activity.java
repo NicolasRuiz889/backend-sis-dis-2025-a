@@ -7,6 +7,8 @@ import java.util.List;
 @Entity
 @Table(name = "activity")
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,9 +19,6 @@ public class Activity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "activity_name", nullable = false)
-    private String name;
-
     @Column(name = "weekly_hours")
     private Integer weeklyHours;
 
@@ -27,19 +26,22 @@ public class Activity {
     private Integer semesterHours;
 
     private String description;
-    private String product;
-    private String status;
+
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products;
+
+    @Builder.Default
+    @Column(name = "status", nullable = false)
+    private Boolean status = true;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activity_catalog_id")
+    private ActivityCatalog activityCatalog;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", nullable = false)
     private SubcategoryActivity subcategory;
 
-    @OneToMany(
-            mappedBy = "activity",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY
-    )
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Agenda> agendas;
 }
-

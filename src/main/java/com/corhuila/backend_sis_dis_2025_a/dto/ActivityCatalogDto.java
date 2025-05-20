@@ -6,10 +6,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubcategoryActivityDto {
+public class ActivityCatalogDto {
+
     private Long id;
     private String name;
-    private String description;
-    private Boolean status;
-    private Long categoryId;
+
 }

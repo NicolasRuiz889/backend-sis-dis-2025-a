@@ -1,5 +1,5 @@
 package com.corhuila.backend_sis_dis_2025_a.dto;
-
+import java.util.List;
 import lombok.*;
 
 @Data
@@ -8,11 +8,14 @@ import lombok.*;
 @Builder
 public class ActivityDto {
     private Long id;
-    private String name;
+     private Long activityCatalogId;
+    private String activityCatalogName;
     private Integer weeklyHours;
     private Integer semesterHours;
     private String description;
-    private String product;
-    private String status;
+    private List<ProductDto> product;
+    private Boolean status;
     private Long subcategoryId;
+    private String subcategoryName;
+   
 }

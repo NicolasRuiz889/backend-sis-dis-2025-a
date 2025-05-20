@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
+import org.antlr.v4.runtime.misc.NotNull;
+
 @Entity
 @Table(name = "subcategory_activity")
 @Data
@@ -21,7 +23,11 @@ public class SubcategoryActivity {
     private String name;
 
     private String description;
-    private String status;
+
+   
+    @Builder.Default
+    @Column(name = "status", nullable = false)
+    private Boolean status = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

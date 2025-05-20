@@ -21,7 +21,10 @@ public class Category {
     private String name;
 
     private String description;
-    private String status;
+    
+    @Builder.Default
+    @Column(name = "status", nullable = false)
+    private Boolean status = true;
 
     @OneToMany(
             mappedBy = "category",
