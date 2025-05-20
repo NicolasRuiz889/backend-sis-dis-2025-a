@@ -1,5 +1,6 @@
 package com.corhuila.backend_sis_dis_2025_a.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,6 +17,10 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idPersona"
+)
 public class Persona {
 
     @Id
@@ -34,7 +40,11 @@ public class Persona {
     @JoinTable(
             name = "persona_roles",
             joinColumns = @JoinColumn(name = "persona_id"),
-            inverseJoinColumns = @JoinColumn(name = "rol_id"))
+            inverseJoinColumns = @JoinColumn(name = "rol_id")
+    )
     private Set<Roles> roles;
+
+    @OneToMany(mappedBy = "persona")
+    private List<Agenda> agendas;
 
 }

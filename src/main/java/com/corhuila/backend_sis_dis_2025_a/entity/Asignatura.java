@@ -1,5 +1,6 @@
 package com.corhuila.backend_sis_dis_2025_a.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idAsignatura"
+)
 public class Asignatura {
 
     @Id
@@ -28,6 +33,7 @@ public class Asignatura {
     private Programa programa;
 
     @OneToMany(mappedBy = "asignatura")
+    @JsonIgnore
     private List<Grupo> grupos;
 
 }

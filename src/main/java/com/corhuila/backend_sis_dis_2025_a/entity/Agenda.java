@@ -1,5 +1,8 @@
 package com.corhuila.backend_sis_dis_2025_a.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +12,10 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idAgenda"
+)
 public class Agenda {
 
     @Id
