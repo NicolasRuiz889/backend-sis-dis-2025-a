@@ -1,5 +1,7 @@
 package com.corhuila.backend_sis_dis_2025_a.controller;
 
+import com.corhuila.backend_sis_dis_2025_a.dto.request.PersonaRequestDTO;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.PersonaResponseDTO;
 import com.corhuila.backend_sis_dis_2025_a.entity.Persona;
 import com.corhuila.backend_sis_dis_2025_a.service.IPersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,27 +19,23 @@ public class PersonaController {
     private IPersonaService personaService;
 
     @PostMapping
-    public ResponseEntity<Persona> createPersona(@RequestBody Persona persona) {
-        Persona savedPersona = personaService.savePersona(persona);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPersona);
+    public ResponseEntity<PersonaResponseDTO> createPersona(@RequestBody PersonaRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(personaService.savePersona(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Persona> updatePersona(@PathVariable Long id, @RequestBody Persona persona) {
-        Persona updatedPersona = personaService.updatePersona(id, persona);
-        return ResponseEntity.ok(updatedPersona);
+    public ResponseEntity<PersonaResponseDTO> updatePersona(@PathVariable Long id, @RequestBody PersonaRequestDTO dto) {
+        return ResponseEntity.ok(personaService.updatePersona(id, dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<Persona>> getAllPersonas() {
-        List<Persona> personas = personaService.getAllPersonas();
-        return ResponseEntity.ok(personas);
+    public ResponseEntity<List<PersonaResponseDTO>> getAllPersonas() {
+        return ResponseEntity.ok(personaService.getAllPersonas());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Persona> getPersonaById(@PathVariable Long id) {
-        Persona persona = personaService.getPersonaById(id);
-        return ResponseEntity.ok(persona);
+    public ResponseEntity<PersonaResponseDTO> getPersonaById(@PathVariable Long id) {
+        return ResponseEntity.ok(personaService.getPersonaById(id));
     }
 
     @DeleteMapping("/{id}")

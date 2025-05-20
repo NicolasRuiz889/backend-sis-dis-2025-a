@@ -1,5 +1,7 @@
 package com.corhuila.backend_sis_dis_2025_a.controller;
 
+import com.corhuila.backend_sis_dis_2025_a.dto.request.ProgramaRequestDTO;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ProgramaResponseDTO;
 import com.corhuila.backend_sis_dis_2025_a.entity.Programa;
 import com.corhuila.backend_sis_dis_2025_a.service.IProgramaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,27 +19,23 @@ public class ProgramaController {
     private IProgramaService programaService;
 
     @PostMapping
-    public ResponseEntity<Programa> createPrograma(@RequestBody Programa programa) {
-        Programa savedPrograma = programaService.savePrograma(programa);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPrograma);
+    public ResponseEntity<ProgramaResponseDTO> createPrograma(@RequestBody ProgramaRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(programaService.savePrograma(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Programa> updatePrograma(@PathVariable Long id, @RequestBody Programa programa) {
-        Programa updatedPrograma = programaService.updatePrograma(id, programa);
-        return ResponseEntity.ok(updatedPrograma);
+    public ResponseEntity<ProgramaResponseDTO> updatePrograma(@PathVariable Long id, @RequestBody ProgramaRequestDTO dto) {
+        return ResponseEntity.ok(programaService.updatePrograma(id, dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<Programa>> getAllProgramas() {
-        List<Programa> programas = programaService.getAllProgramas();
-        return ResponseEntity.ok(programas);
+    public ResponseEntity<List<ProgramaResponseDTO>> getAllProgramas() {
+        return ResponseEntity.ok(programaService.getAllProgramas());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Programa> getProgramaById(@PathVariable Long id) {
-        Programa programa = programaService.getProgramaById(id);
-        return ResponseEntity.ok(programa);
+    public ResponseEntity<ProgramaResponseDTO> getProgramaById(@PathVariable Long id) {
+        return ResponseEntity.ok(programaService.getProgramaById(id));
     }
 
     @DeleteMapping("/{id}")

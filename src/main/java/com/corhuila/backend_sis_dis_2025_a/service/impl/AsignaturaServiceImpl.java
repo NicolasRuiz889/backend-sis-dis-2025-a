@@ -1,5 +1,7 @@
 package com.corhuila.backend_sis_dis_2025_a.service.impl;
 
+import com.corhuila.backend_sis_dis_2025_a.dto.request.AsignaturaRequestDTO;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.AsignaturaResponseDTO;
 import com.corhuila.backend_sis_dis_2025_a.entity.Asignatura;
 import com.corhuila.backend_sis_dis_2025_a.entity.Programa;
 import com.corhuila.backend_sis_dis_2025_a.exception.ResourceNotFoundException;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AsignaturaServiceImpl implements IAsignaturaService {
@@ -21,37 +24,62 @@ public class AsignaturaServiceImpl implements IAsignaturaService {
     private IProgramaService programaService;
 
     @Override
-    public Asignatura saveAsignatura(Asignatura asignatura) {
-        Programa programa = programaService.getProgramaById(asignatura.getPrograma().getIdPrograma());
+    public AsignaturaResponseDTO saveAsignatura(AsignaturaRequestDTO dto) {
+        Programa programa = programaService.getProgramaByIdEntity(dto.getProgramaId());
+
+        Asignatura asignatura = new Asignatura();
+        asignatura.setNombreAsignatura(dto.getNombreAsignatura());
+        asignatura.setHoraSemanal(dto.getHoraSemanal());
+        asignatura.setHoraSemestre(dto.getHoraSemestre());
         asignatura.setPrograma(programa);
-        return asignaturaRepository.save(asignatura);
+
+        return mapToResponse(asignaturaRepository.save(asignatura));
     }
 
     @Override
-    public Asignatura updateAsignatura(Long id, Asignatura asignatura) {
-        Asignatura existingAsignatura = getAsignaturaById(id);
-        existingAsignatura.setNombreAsignatura(asignatura.getNombreAsignatura());
-        existingAsignatura.setHoraSemanal(asignatura.getHoraSemanal());
-        existingAsignatura.setHoraSemestre(asignatura.getHoraSemestre());
-        existingAsignatura.setPrograma(asignatura.getPrograma());
-        return asignaturaRepository.save(existingAsignatura);
+    public AsignaturaResponseDTO updateAsignatura(Long id, AsignaturaRequestDTO dto) {
+        Asignatura asignatura = getAsignaturaByIdEntity(id);
+        Programa programa = programaService.getProgramaByIdEntity(dto.getProgramaId());
+
+        asignatura.setNombreAsignatura(dto.getNombreAsignatura());
+        asignatura.setHoraSemanal(dto.getHoraSemanal());
+        asignatura.setHoraSemestre(dto.getHoraSemestre());
+        asignatura.setPrograma(programa);
+
+        return mapToResponse(asignaturaRepository.save(asignatura));
     }
 
     @Override
-    public List<Asignatura> getAllAsignaturas() {
-        return asignaturaRepository.findAll();
+    public List<AsignaturaResponseDTO> getAllAsignaturas() {
+        return asignaturaRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Asignatura getAsignaturaById(Long id) {
-        return asignaturaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Asignatura", "id", id));
+    public AsignaturaResponseDTO getAsignaturaById(Long id) {
+        return mapToResponse(getAsignaturaByIdEntity(id));
     }
 
     @Override
     public void deleteAsignatura(Long id) {
-        Asignatura asignatura = getAsignaturaById(id);
-        asignaturaRepository.delete(asignatura);
+        asignaturaRepository.delete(getAsignaturaByIdEntity(id));
+    }
+
+    public Asignatura getAsignaturaByIdEntity(Long id) {
+        return asignaturaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Asignatura", "id", id));
+    }
+
+    private AsignaturaResponseDTO mapToResponse(Asignatura asignatura) {
+        AsignaturaResponseDTO dto = new AsignaturaResponseDTO();
+        dto.setIdAsignatura(asignatura.getIdAsignatura());
+        dto.setNombreAsignatura(asignatura.getNombreAsignatura());
+        dto.setHoraSemanal(asignatura.getHoraSemanal());
+        dto.setHoraSemestre(asignatura.getHoraSemestre());
+        dto.setProgramaNombre(asignatura.getPrograma() != null ? asignatura.getPrograma().getNombrePrograma() : null);
+        return dto;
     }
 
 }

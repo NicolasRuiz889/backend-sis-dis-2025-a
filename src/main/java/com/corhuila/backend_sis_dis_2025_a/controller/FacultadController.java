@@ -1,5 +1,7 @@
 package com.corhuila.backend_sis_dis_2025_a.controller;
 
+import com.corhuila.backend_sis_dis_2025_a.dto.request.FacultadRequestDTO;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.FacultadResponseDTO;
 import com.corhuila.backend_sis_dis_2025_a.entity.Facultad;
 import com.corhuila.backend_sis_dis_2025_a.service.IFacultadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,27 +19,23 @@ public class FacultadController {
     private IFacultadService facultadService;
 
     @PostMapping
-    public ResponseEntity<Facultad> createFacultad(@RequestBody Facultad facultad) {
-        Facultad savedFacultad = facultadService.saveFacultad(facultad);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedFacultad);
+    public ResponseEntity<FacultadResponseDTO> createFacultad(@RequestBody FacultadRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(facultadService.saveFacultad(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Facultad> updateFacultad(@PathVariable Long id, @RequestBody Facultad facultad) {
-        Facultad updatedFacultad = facultadService.updateFacultad(id, facultad);
-        return ResponseEntity.ok(updatedFacultad);
+    public ResponseEntity<FacultadResponseDTO> updateFacultad(@PathVariable Long id, @RequestBody FacultadRequestDTO dto) {
+        return ResponseEntity.ok(facultadService.updateFacultad(id, dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<Facultad>> getAllFacultades() {
-        List<Facultad> facultades = facultadService.getAllFacultades();
-        return ResponseEntity.ok(facultades);
+    public ResponseEntity<List<FacultadResponseDTO>> getAllFacultades() {
+        return ResponseEntity.ok(facultadService.getAllFacultades());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Facultad> getFacultadById(@PathVariable Long id) {
-        Facultad facultad = facultadService.getFacultadById(id);
-        return ResponseEntity.ok(facultad);
+    public ResponseEntity<FacultadResponseDTO> getFacultadById(@PathVariable Long id) {
+        return ResponseEntity.ok(facultadService.getFacultadById(id));
     }
 
     @DeleteMapping("/{id}")

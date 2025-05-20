@@ -1,5 +1,7 @@
 package com.corhuila.backend_sis_dis_2025_a.controller;
 
+import com.corhuila.backend_sis_dis_2025_a.dto.request.AsignaturaRequestDTO;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.AsignaturaResponseDTO;
 import com.corhuila.backend_sis_dis_2025_a.entity.Asignatura;
 import com.corhuila.backend_sis_dis_2025_a.service.IAsignaturaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,27 +19,23 @@ public class AsignaturaController {
     private IAsignaturaService asignaturaService;
 
     @PostMapping
-    public ResponseEntity<Asignatura> createAsignatura(@RequestBody Asignatura asignatura) {
-        Asignatura savedAsignatura = asignaturaService.saveAsignatura(asignatura);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedAsignatura);
+    public ResponseEntity<AsignaturaResponseDTO> createAsignatura(@RequestBody AsignaturaRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(asignaturaService.saveAsignatura(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Asignatura> updateAsignatura(@PathVariable Long id, @RequestBody Asignatura asignatura) {
-        Asignatura updatedAsignatura = asignaturaService.updateAsignatura(id, asignatura);
-        return ResponseEntity.ok(updatedAsignatura);
+    public ResponseEntity<AsignaturaResponseDTO> updateAsignatura(@PathVariable Long id, @RequestBody AsignaturaRequestDTO dto) {
+        return ResponseEntity.ok(asignaturaService.updateAsignatura(id, dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<Asignatura>> getAllAsignaturas() {
-        List<Asignatura> asignaturas = asignaturaService.getAllAsignaturas();
-        return ResponseEntity.ok(asignaturas);
+    public ResponseEntity<List<AsignaturaResponseDTO>> getAllAsignaturas() {
+        return ResponseEntity.ok(asignaturaService.getAllAsignaturas());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Asignatura> getAsignaturaById(@PathVariable Long id) {
-        Asignatura asignatura = asignaturaService.getAsignaturaById(id);
-        return ResponseEntity.ok(asignatura);
+    public ResponseEntity<AsignaturaResponseDTO> getAsignaturaById(@PathVariable Long id) {
+        return ResponseEntity.ok(asignaturaService.getAsignaturaById(id));
     }
 
     @DeleteMapping("/{id}")
