@@ -1,39 +1,39 @@
 package com.corhuila.backend_sis_dis_2025_a.controller;
-
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.ProgramDto;
-import com.corhuila.backend_sis_dis_2025_a.service.IProgramService;
+import com.corhuila.backend_sis_dis_2025_a.dto.ClassOrientationDto;
+import com.corhuila.backend_sis_dis_2025_a.service.IClassOrientationService;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
+
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
-@RequestMapping("/api/programs")
+@RequestMapping("/api/class-orientations")
 @RequiredArgsConstructor
-public class ProgramController {
+public class ClassOrientationController {
 
-    private final IProgramService service;
+    private final IClassOrientationService service;
 
     @PostMapping
-    public ProgramDto create(@RequestBody ProgramDto dto) {
+    public ClassOrientationDto create(@RequestBody ClassOrientationDto dto) {
         return service.create(dto);
     }
 
     @GetMapping
-    public List<ProgramDto> getAll() {
+    public List<ClassOrientationDto> getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public ProgramDto getById(@PathVariable Long id) {
+    public ClassOrientationDto getById(@PathVariable Long id) {
         return service.findById(id);
     }
 
     @PutMapping("/{id}")
-    public ProgramDto update(@PathVariable Long id, @RequestBody ProgramDto dto) {
+    public ClassOrientationDto update(@PathVariable Long id, @RequestBody ClassOrientationDto dto) {
         return service.update(id, dto);
     }
 
@@ -42,4 +42,6 @@ public class ProgramController {
         service.delete(id);
     }
 
+
+    
 }

@@ -1,39 +1,37 @@
 package com.corhuila.backend_sis_dis_2025_a.controller;
 
-import org.springframework.web.bind.annotation.*;
-
-import com.corhuila.backend_sis_dis_2025_a.dto.ProgramDto;
-import com.corhuila.backend_sis_dis_2025_a.service.IProgramService;
-
+import com.corhuila.backend_sis_dis_2025_a.dto.GroupDto;
+import com.corhuila.backend_sis_dis_2025_a.service.IGroupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
-@RequestMapping("/api/programs")
+@RequestMapping("/api/groups")
 @RequiredArgsConstructor
-public class ProgramController {
+public class GroupController {
 
-    private final IProgramService service;
+    private final IGroupService service;
 
     @PostMapping
-    public ProgramDto create(@RequestBody ProgramDto dto) {
+    public GroupDto create(@RequestBody GroupDto dto) {
         return service.create(dto);
     }
 
     @GetMapping
-    public List<ProgramDto> getAll() {
+    public List<GroupDto> getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public ProgramDto getById(@PathVariable Long id) {
+    public GroupDto getById(@PathVariable Long id) {
         return service.findById(id);
     }
 
     @PutMapping("/{id}")
-    public ProgramDto update(@PathVariable Long id, @RequestBody ProgramDto dto) {
+    public GroupDto update(@PathVariable Long id, @RequestBody GroupDto dto) {
         return service.update(id, dto);
     }
 
@@ -41,5 +39,5 @@ public class ProgramController {
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
-
 }
+
