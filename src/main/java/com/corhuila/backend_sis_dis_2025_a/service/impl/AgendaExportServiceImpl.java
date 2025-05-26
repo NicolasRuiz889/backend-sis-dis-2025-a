@@ -23,7 +23,7 @@ import com.corhuila.backend_sis_dis_2025_a.service.IClassOrientationService;
 @Service
 public class AgendaExportServiceImpl implements IAgendaExportService {
 
-    // Profesor profesor = profesorRepository.findByNombre("Juan Pérez");
+    // Profesor profesor = profesorRepository.findByNombre("Jesus Ariel");
     // Long profesorId = 1L;
 
     private final IClassOrientationService classOrientationService;
@@ -92,10 +92,10 @@ public class AgendaExportServiceImpl implements IAgendaExportService {
             rowNum++;
 
             // Ajustar ancho total para secciones superiores (Título y Datos del Profesor)
-            int columnasTotales = 5; // columnas 0 a 6 (A a G)
-for (int i = 0; i < columnasTotales; i++) {
-    sheet.setColumnWidth(i, 3000); // Ajusta según necesidad (máximo es 255*256 = 65280)
-}
+            int columnasTotales = 5; 
+            for (int i = 0; i < columnasTotales; i++) {
+            sheet.setColumnWidth(i, 3000); 
+            }
 
             // ===== 3. DOCENCIA =====
             if (!orientaciones.isEmpty()) {
@@ -143,7 +143,7 @@ for (int i = 0; i < columnasTotales; i++) {
                 Row totalRow = sheet.createRow(rowNum++);
                 Cell totalLabelCell = totalRow.createCell(0);
                 totalLabelCell.setCellValue("TOTALES:");
-                totalLabelCell.setCellStyle(headerStyle); // Puedes usar otro estilo si prefieres
+                totalLabelCell.setCellStyle(headerStyle); 
                 sheet.addMergedRegion(new CellRangeAddress(totalRow.getRowNum(), totalRow.getRowNum(), 0, 3));
 
                 Cell totalSemanalCell = totalRow.createCell(4);
