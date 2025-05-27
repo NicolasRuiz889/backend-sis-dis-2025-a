@@ -30,7 +30,7 @@ public class Category {
             mappedBy = "category",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     private List<SubcategoryActivity> subcategories;
 }

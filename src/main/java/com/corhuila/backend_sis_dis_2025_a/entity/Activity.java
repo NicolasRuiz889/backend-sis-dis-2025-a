@@ -2,6 +2,8 @@ package com.corhuila.backend_sis_dis_2025_a.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,8 +28,8 @@ public class Activity {
 
     private String description;
 
-    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products;
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Product> products = new ArrayList<>();
 
     @Builder.Default
     @Column(name = "status", nullable = false)

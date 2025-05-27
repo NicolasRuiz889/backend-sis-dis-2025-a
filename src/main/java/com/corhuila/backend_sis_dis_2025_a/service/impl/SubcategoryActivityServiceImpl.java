@@ -10,6 +10,7 @@ import com.corhuila.backend_sis_dis_2025_a.repository.SubcategoryActivityReposit
 import com.corhuila.backend_sis_dis_2025_a.service.ISubcategoryActivityService;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,6 +70,7 @@ public class SubcategoryActivityServiceImpl implements ISubcategoryActivityServi
     }
 
     @Override
+    @Transactional
     public SubcategoryActivityResponse findById(Long id) {
         return repo.findById(id)
                 .map(this::toResponse)
@@ -76,6 +78,7 @@ public class SubcategoryActivityServiceImpl implements ISubcategoryActivityServi
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SubcategoryActivityResponse> findAll() {
         return repo.findAll().stream()
                 .map(this::toResponse)

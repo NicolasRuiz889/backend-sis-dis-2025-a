@@ -14,7 +14,10 @@ import com.corhuila.backend_sis_dis_2025_a.repository.SubcategoryActivityReposit
 import com.corhuila.backend_sis_dis_2025_a.service.IActivityService;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,16 +46,17 @@ public class ActivityServiceImpl implements IActivityService {
                 .subcategory(subcategory)
                 .build();
 
+        List<Product> products = new ArrayList<>();
         if (request.getProducts() != null) {
-            List<Product> products = request.getProducts().stream()
+            products = request.getProducts().stream()
                     .map(p -> Product.builder()
                             .id(p.getId())
                             .name(p.getName())
                             .activity(activity)
                             .build())
                     .collect(Collectors.toList());
-            activity.setProducts(products);
         }
+        activity.setProducts(products);
 
         return activity;
     }
@@ -69,16 +73,18 @@ public class ActivityServiceImpl implements IActivityService {
                 .subcategoryId(activity.getSubcategory().getId())
                 .subcategoryName(activity.getSubcategory().getName())
                 .categoryName(activity.getSubcategory().getCategory().getName())
-                .products(activity.getProducts().stream()
-                        .map(p -> ProductResponse.builder()
-                                .id(p.getId())
-                                .name(p.getName())
-                                .build())
-                        .collect(Collectors.toList()))
+                .products(activity.getProducts() != null ?
+                        activity.getProducts().stream()
+                                .map(p -> ProductResponse.builder()
+                                        .id(p.getId())
+                                        .name(p.getName())
+                                        .build())
+                                .collect(Collectors.toList()) : Collections.emptyList())
                 .build();
     }
 
     @Override
+    @Transactional
     public ActivityResponse create(ActivityRequest request) {
         Activity entity = toEntity(request);
         return toResponse(repo.save(entity));
@@ -126,6 +132,7 @@ public class ActivityServiceImpl implements IActivityService {
     }
 
     @Override
+    @Transactional
     public List<ActivityResponse> findAll() {
         return repo.findAll().stream()
                 .map(this::toResponse)
@@ -133,6 +140,7 @@ public class ActivityServiceImpl implements IActivityService {
     }
 
     @Override
+    @Transactional
     public List<ActivityResponse> findByProfesorId(Long profesorId) {
         return repo.findAll().stream()
                 .map(this::toResponse)
