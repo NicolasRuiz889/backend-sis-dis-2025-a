@@ -1,22 +1,47 @@
 package com.corhuila.backend_sis_dis_2025_a.controller;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.SubcategoryActivityDto;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.SubcategoryActivityRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.SubcategoryActivityResponse;
 import com.corhuila.backend_sis_dis_2025_a.service.ISubcategoryActivityService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/subcategories")
+@RequestMapping("/subcategories")
 @RequiredArgsConstructor
 public class SubcategoryActivityController {
 
     private final ISubcategoryActivityService service;
 
-    @PostMapping      public SubcategoryActivityDto create(@RequestBody SubcategoryActivityDto dto) { return service.create(dto); }
-    @GetMapping       public List<SubcategoryActivityDto> getAll()                               { return service.findAll(); }
-    @GetMapping("/{id}") public SubcategoryActivityDto getById(@PathVariable Long id)            { return service.findById(id); }
-    @PutMapping("/{id}") public SubcategoryActivityDto update(@PathVariable Long id,@RequestBody SubcategoryActivityDto dto){ return service.update(id,dto); }
-    @DeleteMapping("/{id}") public void delete(@PathVariable Long id)                          { service.delete(id); }
+    @PostMapping
+    public ResponseEntity<SubcategoryActivityResponse> create(@Valid @RequestBody SubcategoryActivityRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SubcategoryActivityResponse> update(@PathVariable Long id,
+                                                              @Valid @RequestBody SubcategoryActivityRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<SubcategoryActivityResponse>> getAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SubcategoryActivityResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

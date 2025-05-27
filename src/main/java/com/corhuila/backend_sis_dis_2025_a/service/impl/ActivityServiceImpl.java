@@ -1,7 +1,9 @@
 package com.corhuila.backend_sis_dis_2025_a.service.impl;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.ActivityDto;
-import com.corhuila.backend_sis_dis_2025_a.dto.ProductDto;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.ActivityRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.ProductRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ActivityResponse;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ProductResponse;
 import com.corhuila.backend_sis_dis_2025_a.entity.Activity;
 import com.corhuila.backend_sis_dis_2025_a.entity.ActivityCatalog;
 import com.corhuila.backend_sis_dis_2025_a.entity.Product;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,55 +27,28 @@ public class ActivityServiceImpl implements IActivityService {
     private final SubcategoryActivityRepository subRepo;
     private final ActivityCatalogRepository activityCatalogRepo;
 
-    private ActivityDto toDto(Activity e) {
+    private Activity toEntity(ActivityRequest request) {
+        ActivityCatalog catalog = activityCatalogRepo.findById(request.getActivityCatalogId())
+                .orElseThrow(() -> new RuntimeException("Activity Catalog not found"));
 
-        List<ProductDto> productDtos = e.getProducts().stream()
-                .map(p -> ProductDto.builder()
-                        .id(p.getId())
-                        .name(p.getName())
-                        .build())
-                .collect(Collectors.toList());
-
-        return ActivityDto.builder()
-                .id(e.getId())
-                .activityCatalogId(e.getActivityCatalog().getId())
-                .activityCatalogName(e.getActivityCatalog().getName())
-                .weeklyHours(e.getWeeklyHours())
-                .semesterHours(e.getSemesterHours())
-                .description(e.getDescription())
-                .product(productDtos)
-                .status(e.getStatus())
-                .subcategoryId(e.getSubcategory().getId())
-                .subcategoryName(e.getSubcategory().getName())
-                .categoryName(e.getSubcategory().getCategory().getName())
-                .build();
-    }
-
-    private Activity toEntity(ActivityDto d) {
-        SubcategoryActivity sub = subRepo.findById(d.getSubcategoryId())
+        SubcategoryActivity subcategory = subRepo.findById(request.getSubcategoryId())
                 .orElseThrow(() -> new RuntimeException("Subcategory not found"));
 
-        ActivityCatalog activityCatalog = activityCatalogRepo.findById(d.getActivityCatalogId())
-                .orElseThrow(() -> new RuntimeException("Activity Catalog not found"));
         Activity activity = Activity.builder()
-                .id(d.getId())
-
-                .weeklyHours(d.getWeeklyHours())
-                .semesterHours(d.getWeeklyHours() * 16) // Calculo de horas semestrales
-
-                .description(d.getDescription())
-                .status(d.getStatus())
-                .subcategory(sub)
-                .activityCatalog(activityCatalog)
+                .weeklyHours(request.getWeeklyHours())
+                .semesterHours(request.getWeeklyHours() * 16)
+                .description(request.getDescription())
+                .status(Optional.ofNullable(request.getStatus()).orElse(true))
+                .activityCatalog(catalog)
+                .subcategory(subcategory)
                 .build();
 
-        // Asignar productos con relación inversa
-        if (d.getProduct() != null) {
-            List<Product> products = d.getProduct().stream()
+        if (request.getProducts() != null) {
+            List<Product> products = request.getProducts().stream()
                     .map(p -> Product.builder()
-                            .id(p.getId()) // Puede ser null si es nuevo
+                            .id(p.getId())
                             .name(p.getName())
-                            .activity(activity) // Relación inversa
+                            .activity(activity)
                             .build())
                     .collect(Collectors.toList());
             activity.setProducts(products);
@@ -81,36 +57,60 @@ public class ActivityServiceImpl implements IActivityService {
         return activity;
     }
 
-    @Override
-    public ActivityDto create(ActivityDto dto) {
-        return toDto(repo.save(toEntity(dto)));
+    private ActivityResponse toResponse(Activity activity) {
+        return ActivityResponse.builder()
+                .id(activity.getId())
+                .description(activity.getDescription())
+                .weeklyHours(activity.getWeeklyHours())
+                .semesterHours(activity.getSemesterHours())
+                .status(activity.getStatus())
+                .activityCatalogId(activity.getActivityCatalog().getId())
+                .activityCatalogName(activity.getActivityCatalog().getName())
+                .subcategoryId(activity.getSubcategory().getId())
+                .subcategoryName(activity.getSubcategory().getName())
+                .categoryName(activity.getSubcategory().getCategory().getName())
+                .products(activity.getProducts().stream()
+                        .map(p -> ProductResponse.builder()
+                                .id(p.getId())
+                                .name(p.getName())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     @Override
-    public ActivityDto update(Long id, ActivityDto dto) {
-        Activity e = repo.findById(id)
+    public ActivityResponse create(ActivityRequest request) {
+        Activity entity = toEntity(request);
+        return toResponse(repo.save(entity));
+    }
+
+    @Override
+    public ActivityResponse update(Long id, ActivityRequest request) {
+        Activity existing = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Activity not found"));
-        e.setActivityCatalog(activityCatalogRepo.findById(dto.getActivityCatalogId())
+
+        existing.setWeeklyHours(request.getWeeklyHours());
+        existing.setSemesterHours(request.getWeeklyHours() * 16);
+        existing.setDescription(request.getDescription());
+        existing.setStatus(Optional.ofNullable(request.getStatus()).orElse(true));
+        existing.setActivityCatalog(activityCatalogRepo.findById(request.getActivityCatalogId())
                 .orElseThrow(() -> new RuntimeException("Activity Catalog not found")));
-        e.setWeeklyHours(dto.getWeeklyHours());
-        e.setSemesterHours(dto.getSemesterHours());
-        e.setDescription(dto.getDescription());
-        e.setStatus(dto.getStatus());
-        e.setSubcategory(subRepo.findById(dto.getSubcategoryId())
+        existing.setSubcategory(subRepo.findById(request.getSubcategoryId())
                 .orElseThrow(() -> new RuntimeException("Subcategory not found")));
 
-                e.getProducts().clear();
-        if (dto.getProduct() != null) {
-        for (ProductDto p : dto.getProduct()) {
-            Product product = Product.builder()
-                    .id(p.getId()) // puede ser null si es nuevo
-                    .name(p.getName())
-                    .activity(e) // Importante para mantener la relación bidireccional
-                    .build();
-            e.getProducts().add(product);
+        existing.getProducts().clear();
+        if (request.getProducts() != null) {
+            for (ProductRequest p : request.getProducts()) {
+                Product product = Product.builder()
+                        .id(p.getId())
+                        .name(p.getName())
+                        .activity(existing)
+                        .build();
+                existing.getProducts().add(product);
+            }
         }
-        }
-        return toDto(repo.save(e));
+
+        return toResponse(repo.save(existing));
     }
 
     @Override
@@ -119,25 +119,23 @@ public class ActivityServiceImpl implements IActivityService {
     }
 
     @Override
-    public ActivityDto findById(Long id) {
-        return repo.findById(id).map(this::toDto)
+    public ActivityResponse findById(Long id) {
+        return repo.findById(id)
+                .map(this::toResponse)
                 .orElseThrow(() -> new RuntimeException("Activity not found"));
-
     }
 
     @Override
-    public List<ActivityDto> findAll() {
+    public List<ActivityResponse> findAll() {
         return repo.findAll().stream()
-                .map(this::toDto)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-
-    // Método para obtener actividades por ID de profesor
     @Override
-public List<ActivityDto> findByProfesorId(Long profesorId) {
-    return repo.findAll().stream()
-        .map(this::toDto)
-        .collect(Collectors.toList());
-}
+    public List<ActivityResponse> findByProfesorId(Long profesorId) {
+        return repo.findAll().stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
 }

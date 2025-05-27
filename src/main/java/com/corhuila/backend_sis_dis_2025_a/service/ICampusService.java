@@ -1,14 +1,16 @@
 package com.corhuila.backend_sis_dis_2025_a.service;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.CampusDto;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.CampusRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.CampusResponse;
+
 import java.util.List;
 
 public interface ICampusService {
 
-    CampusDto create(CampusDto dto);
-    CampusDto update(Long id, CampusDto dto);
+    CampusResponse create(CampusRequest request);
+    CampusResponse update(Long id, CampusRequest request);
     void delete(Long id);
-    CampusDto findById(Long id);
-    List<CampusDto> findAll();
+    CampusResponse findById(Long id);
+    List<CampusResponse> findAll();
     
 }

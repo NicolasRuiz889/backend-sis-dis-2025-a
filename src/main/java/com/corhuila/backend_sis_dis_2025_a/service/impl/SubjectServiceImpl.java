@@ -1,8 +1,9 @@
 package com.corhuila.backend_sis_dis_2025_a.service.impl;
 
+import com.corhuila.backend_sis_dis_2025_a.dto.request.SubjectRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.SubjectResponse;
 import org.springframework.stereotype.Service;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.SubjectDto;
 import com.corhuila.backend_sis_dis_2025_a.entity.Program;
 import com.corhuila.backend_sis_dis_2025_a.entity.Subject;
 import com.corhuila.backend_sis_dis_2025_a.repository.IProgramRepository;
@@ -21,66 +22,70 @@ public class SubjectServiceImpl implements ISubjectService {
     private final ISubjectRepository subjectRepository;
     private final IProgramRepository programRepository;
 
-    private SubjectDto toDto(Subject e) {
-        return SubjectDto.builder()
-                .id(e.getId())
-                .code(e.getCode())
-                .name(e.getName())
-                .credits(e.getCredits())
-                .description(e.getDescription())
-                .status(e.getStatus())
-                .programId(e.getProgram().getId())
-                .build();
-    }
-
-    private Subject toEntity(SubjectDto d) {
-        Program program = programRepository.findById(d.getProgramId())
+    private Subject toEntity(SubjectRequest request) {
+        Program program = programRepository.findById(request.getProgramId())
                 .orElseThrow(() -> new RuntimeException("Program not found"));
+
         return Subject.builder()
-                .id(d.getId())
-                .code(d.getCode())
-                .name(d.getName())
-                .credits(d.getCredits())
-                .description(d.getDescription())
-                .status(d.getStatus())
+                .code(request.getCode())
+                .name(request.getName())
+                .credits(request.getCredits())
+                .description(request.getDescription())
+                .status(request.getStatus())
                 .program(program)
                 .build();
     }
 
-    @Override
-    public SubjectDto create(SubjectDto dto) {
-        return toDto(subjectRepository.save(toEntity(dto)));
+    private SubjectResponse toResponse(Subject subject) {
+        return SubjectResponse.builder()
+                .id(subject.getId())
+                .code(subject.getCode())
+                .name(subject.getName())
+                .credits(subject.getCredits())
+                .description(subject.getDescription())
+                .status(subject.getStatus())
+                .programId(subject.getProgram().getId())
+                .programName(subject.getProgram().getName())
+                .build();
     }
 
     @Override
-    public SubjectDto update(Long id, SubjectDto dto) {
-        Subject e = subjectRepository.findById(id)
+    public SubjectResponse create(SubjectRequest request) {
+        return toResponse(subjectRepository.save(toEntity(request)));
+    }
+
+    @Override
+    public SubjectResponse update(Long id, SubjectRequest request) {
+        Subject subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subject not found"));
-        e.setCode(dto.getCode());
-        e.setName(dto.getName());
-        e.setCredits(dto.getCredits());
-        e.setDescription(dto.getDescription());
-        e.setStatus(dto.getStatus());
-        e.setProgram(programRepository.findById(dto.getProgramId())
+
+        subject.setCode(request.getCode());
+        subject.setName(request.getName());
+        subject.setCredits(request.getCredits());
+        subject.setDescription(request.getDescription());
+        subject.setStatus(request.getStatus());
+        subject.setProgram(programRepository.findById(request.getProgramId())
                 .orElseThrow(() -> new RuntimeException("Program not found")));
-        return toDto(subjectRepository.save(e));
+
+        return toResponse(subjectRepository.save(subject));
     }
 
     @Override
     public void delete(Long id) {
         subjectRepository.deleteById(id);
     }
+
     @Override
-    public SubjectDto findById(Long id) {
-        return toDto(subjectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subject not found")));
+    public SubjectResponse findById(Long id) {
+        return subjectRepository.findById(id)
+                .map(this::toResponse)
+                .orElseThrow(() -> new RuntimeException("Subject not found"));
     }
 
     @Override
-    public List<SubjectDto> findAll() {
+    public List<SubjectResponse> findAll() {
         return subjectRepository.findAll().stream()
-                .map(this::toDto)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
-    
-}
+    }
 }

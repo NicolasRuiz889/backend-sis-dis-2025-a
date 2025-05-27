@@ -1,6 +1,10 @@
 package com.corhuila.backend_sis_dis_2025_a.service.impl;
 
 import java.io.ByteArrayOutputStream;
+
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ActivityResponse;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ClassOrientationResponse;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ProductResponse;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -12,9 +16,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.ActivityDto;
-import com.corhuila.backend_sis_dis_2025_a.dto.ClassOrientationDto;
-import com.corhuila.backend_sis_dis_2025_a.dto.ProductDto;
 
 import com.corhuila.backend_sis_dis_2025_a.service.IActivityService;
 import com.corhuila.backend_sis_dis_2025_a.service.IAgendaExportService;
@@ -22,9 +23,6 @@ import com.corhuila.backend_sis_dis_2025_a.service.IClassOrientationService;
 
 @Service
 public class AgendaExportServiceImpl implements IAgendaExportService {
-
-    // Profesor profesor = profesorRepository.findByNombre("Jesus Ariel");
-    // Long profesorId = 1L;
 
     private final IClassOrientationService classOrientationService;
     private final IActivityService activityService;
@@ -37,8 +35,8 @@ public class AgendaExportServiceImpl implements IAgendaExportService {
 
     @Override
     public ByteArrayInputStream exportarAgendaProfesor(Long profesorId) throws IOException {
-        List<ClassOrientationDto> orientaciones = classOrientationService.findByProfesorId(profesorId);
-        List<ActivityDto> activities = activityService.findByProfesorId(profesorId);
+        List<ClassOrientationResponse> orientaciones = classOrientationService.findByProfesorId(profesorId);
+        List<ActivityResponse> activities = activityService.findByProfesorId(profesorId);
 
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Agenda Profesor");
@@ -124,7 +122,7 @@ public class AgendaExportServiceImpl implements IAgendaExportService {
                 // 1. Inicializa acumuladores
                 int totalHorasSemanales = 0;
                 int totalHorasSemestre = 0;
-                for (ClassOrientationDto o : orientaciones) {
+                for (ClassOrientationResponse o : orientaciones) {
                     Row row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(o.getSubjectName());
                     row.createCell(1).setCellValue(o.getProgramName());
@@ -194,18 +192,18 @@ public class AgendaExportServiceImpl implements IAgendaExportService {
                         new CellRangeAddress(actividadesTitleRow.getRowNum(), actividadesTitleRow.getRowNum(), 0, 5));
 
                 // Agrupar actividades por categoría y subcategoría
-                Map<String, Map<String, List<ActivityDto>>> groupedActivities = activities.stream()
+                Map<String, Map<String, List<ActivityResponse>>> groupedActivities = activities.stream()
                         .collect(Collectors.groupingBy(
-                                ActivityDto::getCategoryName,
+                                ActivityResponse::getCategoryName,
                                 LinkedHashMap::new,
                                 Collectors.groupingBy(
-                                        ActivityDto::getSubcategoryName,
+                                        ActivityResponse::getSubcategoryName,
                                         LinkedHashMap::new,
                                         Collectors.toList())));
 
-                for (Map.Entry<String, Map<String, List<ActivityDto>>> categoriaEntry : groupedActivities.entrySet()) {
+                for (Map.Entry<String, Map<String, List<ActivityResponse>>> categoriaEntry : groupedActivities.entrySet()) {
                     String categoria = categoriaEntry.getKey();
-                    Map<String, List<ActivityDto>> subcategorias = categoriaEntry.getValue();
+                    Map<String, List<ActivityResponse>> subcategorias = categoriaEntry.getValue();
 
                     int categoriaHorasSemana = 0;
                     int categoriaHorasSemestre = 0;
@@ -218,9 +216,10 @@ public class AgendaExportServiceImpl implements IAgendaExportService {
                     sheet.addMergedRegion(
                             new CellRangeAddress(categoriaRow.getRowNum(), categoriaRow.getRowNum(), 0, 5));
 
-                    for (Map.Entry<String, List<ActivityDto>> subcategoriaEntry : subcategorias.entrySet()) {
+                    for (Map.Entry<String, List<ActivityResponse>> subcategoriaEntry : subcategorias.entrySet()) {
                         String subcategoria = subcategoriaEntry.getKey();
-                        List<ActivityDto> actividades = subcategoriaEntry.getValue();
+                        List<ActivityResponse> actividades = subcategoriaEntry.getValue();
+
 
                         int subHorasSemana = actividades.stream()
                                 .mapToInt(a -> a.getWeeklyHours() != null ? a.getWeeklyHours() : 0).sum();
@@ -260,15 +259,15 @@ public class AgendaExportServiceImpl implements IAgendaExportService {
                         }
 
                         // Actividades
-                        for (ActivityDto a : actividades) {
+                        for (ActivityResponse a : actividades) {
                             Row row = sheet.createRow(rowNum++);
                             createCell(row, 0, a.getActivityCatalogName(), cellStyle);
                             createCell(row, 1, a.getWeeklyHours(), cellStyle);
                             createCell(row, 2, a.getSemesterHours(), cellStyle);
                             createCell(row, 3, a.getDescription(), cellStyle);
 
-                            String productos = a.getProduct() != null
-                                    ? a.getProduct().stream().map(ProductDto::getName).collect(Collectors.joining("\n"))
+                            String productos = a.getProducts() != null
+                                    ? a.getProducts().stream().map(ProductResponse::getName).collect(Collectors.joining("\n"))
                                     : "";
                             createCell(row, 4, productos, cellStyle);
                         }

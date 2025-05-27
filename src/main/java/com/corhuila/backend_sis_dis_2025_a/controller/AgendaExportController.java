@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.corhuila.backend_sis_dis_2025_a.service.IAgendaExportService;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/export")
+@RequestMapping("/export")
 public class AgendaExportController {
 
     private final IAgendaExportService agendaExportService;

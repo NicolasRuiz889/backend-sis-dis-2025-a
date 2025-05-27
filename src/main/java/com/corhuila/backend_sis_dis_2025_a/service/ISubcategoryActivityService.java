@@ -1,13 +1,15 @@
 package com.corhuila.backend_sis_dis_2025_a.service;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.SubcategoryActivityDto;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.SubcategoryActivityRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.SubcategoryActivityResponse;
+
 import java.util.List;
 
 public interface ISubcategoryActivityService {
-    SubcategoryActivityDto create(SubcategoryActivityDto dto);
-    SubcategoryActivityDto update(Long id, SubcategoryActivityDto dto);
+    SubcategoryActivityResponse create(SubcategoryActivityRequest request);
+    SubcategoryActivityResponse update(Long id, SubcategoryActivityRequest request);
     void delete(Long id);
-    SubcategoryActivityDto findById(Long id);
-    List<SubcategoryActivityDto> findAll();
+    SubcategoryActivityResponse findById(Long id);
+    List<SubcategoryActivityResponse> findAll();
 }
 

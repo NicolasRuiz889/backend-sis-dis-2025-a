@@ -1,24 +1,47 @@
-// src/main/java/com/corhuila/backend_sis_dis_2025_a/controller/ActivityController.java
 package com.corhuila.backend_sis_dis_2025_a.controller;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.ActivityDto;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.ActivityRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ActivityResponse;
 import com.corhuila.backend_sis_dis_2025_a.service.IActivityService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/activities")
+@RequestMapping("/activities")
 @RequiredArgsConstructor
 public class ActivityController {
 
     private final IActivityService service;
 
-    @PostMapping      public ActivityDto create(@RequestBody ActivityDto dto) { return service.create(dto); }
-    @GetMapping       public List<ActivityDto> getAll()                   { return service.findAll(); }
-    @GetMapping("/{id}") public ActivityDto getById(@PathVariable Long id)  { return service.findById(id); }
-    @PutMapping("/{id}") public ActivityDto update(@PathVariable Long id,@RequestBody ActivityDto dto){ return service.update(id,dto); }
-    @DeleteMapping("/{id}") public void delete(@PathVariable Long id)        { service.delete(id); }
+    @PostMapping
+    public ResponseEntity<ActivityResponse> create(@Valid @RequestBody ActivityRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ActivityResponse> update(@PathVariable Long id, @Valid @RequestBody ActivityRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ActivityResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ActivityResponse>> getAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 

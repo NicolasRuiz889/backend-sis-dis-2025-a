@@ -1,14 +1,16 @@
 package com.corhuila.backend_sis_dis_2025_a.service;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.CategoryDto;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.CategoryRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.CategoryResponse;
+
 import java.util.List;
 
 public interface ICategoryService {
-    CategoryDto create(CategoryDto dto);
-    CategoryDto update(Long id, CategoryDto dto);
+    CategoryResponse create(CategoryRequest request);
+    CategoryResponse update(Long id, CategoryRequest request);
     void delete(Long id);
-    CategoryDto findById(Long id);
-    List<CategoryDto> findAll();
+    CategoryResponse findById(Long id);
+    List<CategoryResponse> findAll();
 }
 
 

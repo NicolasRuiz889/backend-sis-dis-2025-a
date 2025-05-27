@@ -1,12 +1,15 @@
-package com.corhuila.backend_sis_dis_2025_a.dto;
-import lombok.*;
+package com.corhuila.backend_sis_dis_2025_a.dto.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClassOrientationDto {
-
+public class ClassOrientationResponse {
     private Long id;
     private Long subjectId;
     private String subjectName;
@@ -18,10 +21,4 @@ public class ClassOrientationDto {
     private String campusName;
     private Integer weeklyHours;
     private Integer semesterHours;
-    /*private String categoryName;
-    private Long subcategoryId;
-    private String subcategoryName;*/
-
-    
-    
 }

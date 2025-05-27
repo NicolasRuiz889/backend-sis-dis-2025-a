@@ -2,9 +2,11 @@ package com.corhuila.backend_sis_dis_2025_a.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.corhuila.backend_sis_dis_2025_a.dto.request.CampusRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.CampusResponse;
 import org.springframework.stereotype.Service;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.CampusDto;
 import com.corhuila.backend_sis_dis_2025_a.entity.Campus;
 import com.corhuila.backend_sis_dis_2025_a.repository.ICampusRepository;
 import com.corhuila.backend_sis_dis_2025_a.service.ICampusService;
@@ -15,52 +17,61 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CampusServiceImpl implements ICampusService {
 
-
     private final ICampusRepository repo;
-    
 
-    private CampusDto toDto(Campus e) {
-        return CampusDto.builder()
-            .id(e.getId())
-            .name(e.getName())
-            .address(e.getAddress())
-            .phone(e.getPhone())
-            .status(e.getStatus())
-            .build();
-    }
-
-    private Campus toEntity(CampusDto d) {
+    private Campus toEntity(CampusRequest request) {
         return Campus.builder()
-                .id(d.getId())
-                .name(d.getName())
-                .address(d.getAddress())
-                .phone(d.getPhone())
-                .status(d.getStatus())
+                .name(request.getName())
+                .address(request.getAddress())
+                .phone(request.getPhone())
+                .status(request.getStatus())
                 .build();
     }
 
-    @Override public CampusDto create(CampusDto dto) {
-        return toDto(repo.save(toEntity(dto)));
+    private CampusResponse toResponse(Campus entity) {
+        return CampusResponse.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .address(entity.getAddress())
+                .phone(entity.getPhone())
+                .status(entity.getStatus())
+                .build();
     }
 
-    
-    @Override public CampusDto update(Long id, CampusDto dto) {
-        Campus e = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Campus not found"));
-        e.setName(dto.getName());
-        e.setAddress(dto.getAddress());
-        e.setPhone(dto.getPhone());
-        e.setStatus(dto.getStatus());
-        return toDto(repo.save(e));
+    @Override
+    public CampusResponse create(CampusRequest request) {
+        return toResponse(repo.save(toEntity(request)));
     }
-    @Override public void delete(Long id) { repo.deleteById(id); }
-    @Override public CampusDto findById(Long id) {
-        return repo.findById(id).map(this::toDto)
+
+    @Override
+    public CampusResponse update(Long id, CampusRequest request) {
+        Campus campus = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Campus not found"));
+
+        campus.setName(request.getName());
+        campus.setAddress(request.getAddress());
+        campus.setPhone(request.getPhone());
+        campus.setStatus(request.getStatus());
+
+        return toResponse(repo.save(campus));
+    }
+
+    @Override
+    public void delete(Long id) {
+        repo.deleteById(id);
+    }
+
+    @Override
+    public CampusResponse findById(Long id) {
+        return repo.findById(id)
+                .map(this::toResponse)
                 .orElseThrow(() -> new RuntimeException("Campus not found"));
     }
-    @Override public List<CampusDto> findAll() {
+
+    @Override
+    public List<CampusResponse> findAll() {
         return repo.findAll().stream()
-                .map(this::toDto)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
     

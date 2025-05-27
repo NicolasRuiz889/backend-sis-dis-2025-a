@@ -1,13 +1,13 @@
 package com.corhuila.backend_sis_dis_2025_a.service;
 import java.util.List;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.ProgramDto;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.ProgramRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ProgramResponse;
 
 public interface IProgramService {
-    ProgramDto create(ProgramDto dto);
-    ProgramDto update(Long id, ProgramDto dto);
+    ProgramResponse create(ProgramRequest request);
+    ProgramResponse update(Long id, ProgramRequest request);
     void delete(Long id);
-    ProgramDto findById(Long id);
-    List<ProgramDto> findAll();
-    
+    ProgramResponse findById(Long id);
+    List<ProgramResponse> findAll();
 }

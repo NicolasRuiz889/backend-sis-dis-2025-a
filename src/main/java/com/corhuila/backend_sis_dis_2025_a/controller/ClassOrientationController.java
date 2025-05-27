@@ -1,47 +1,49 @@
 package com.corhuila.backend_sis_dis_2025_a.controller;
+
+import com.corhuila.backend_sis_dis_2025_a.dto.request.ClassOrientationRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ClassOrientationResponse;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
-import com.corhuila.backend_sis_dis_2025_a.dto.ClassOrientationDto;
 import com.corhuila.backend_sis_dis_2025_a.service.IClassOrientationService;
 
 import lombok.RequiredArgsConstructor;
 
-
-
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/class-orientations")
+@RequestMapping("/class-orientations")
 @RequiredArgsConstructor
 public class ClassOrientationController {
 
     private final IClassOrientationService service;
 
     @PostMapping
-    public ClassOrientationDto create(@RequestBody ClassOrientationDto dto) {
-        return service.create(dto);
-    }
-
-    @GetMapping
-    public List<ClassOrientationDto> getAll() {
-        return service.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ClassOrientationDto getById(@PathVariable Long id) {
-        return service.findById(id);
+    public ResponseEntity<ClassOrientationResponse> create(@Valid @RequestBody ClassOrientationRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @PutMapping("/{id}")
-    public ClassOrientationDto update(@PathVariable Long id, @RequestBody ClassOrientationDto dto) {
-        return service.update(id, dto);
+    public ResponseEntity<ClassOrientationResponse> update(@PathVariable Long id,
+                                                           @Valid @RequestBody ClassOrientationRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClassOrientationResponse>> getAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClassOrientationResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-
-    
 }

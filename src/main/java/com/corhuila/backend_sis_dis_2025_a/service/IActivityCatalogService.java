@@ -2,16 +2,16 @@ package com.corhuila.backend_sis_dis_2025_a.service;
 
 import java.util.List;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.ActivityCatalogDto;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.ActivityCatalogRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ActivityCatalogResponse;
 
 
 public interface IActivityCatalogService {
-
-    ActivityCatalogDto create(ActivityCatalogDto dto);
-    ActivityCatalogDto update(Long id, ActivityCatalogDto dto);
+    ActivityCatalogResponse create(ActivityCatalogRequest request);
+    ActivityCatalogResponse update(Long id, ActivityCatalogRequest request);
     void delete(Long id);
-    ActivityCatalogDto findById(Long id);
-    List<ActivityCatalogDto> findAll();
+    ActivityCatalogResponse findById(Long id);
+    List<ActivityCatalogResponse> findAll();
 }
 
     

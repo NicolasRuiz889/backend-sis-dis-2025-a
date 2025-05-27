@@ -3,8 +3,9 @@ package com.corhuila.backend_sis_dis_2025_a.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.corhuila.backend_sis_dis_2025_a.dto.request.ProgramRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ProgramResponse;
 import org.springframework.stereotype.Service;
-import com.corhuila.backend_sis_dis_2025_a.dto.ProgramDto;
 import com.corhuila.backend_sis_dis_2025_a.entity.Faculty;
 import com.corhuila.backend_sis_dis_2025_a.entity.Program;
 import com.corhuila.backend_sis_dis_2025_a.repository.IFacultyRepository;
@@ -18,63 +19,78 @@ import lombok.RequiredArgsConstructor;
 public class ProgramServiceImpl implements IProgramService {
 
     private final IProgramRepository repo;
-    private final IFacultyRepository facRepo;
+    private final IFacultyRepository facultyRepo;
 
-    private ProgramDto toDto(Program e) {
-        return ProgramDto.builder()
-                .id(e.getId())
-                .code(e.getCode())
-                .name(e.getName())
-                .modality(e.getModality())
-                .schedule(e.getSchedule())
-                .duration(e.getDuration())
-                .degreeAwarded(e.getDegreeAwarded())
-                .status(e.getStatus())
-                .facultyId(e.getFaculty().getId())
-                .build();
-    }
-
-    private Program toEntity(ProgramDto d) {
-        Faculty fac = facRepo.findById(d.getFacultyId())
+    private Program toEntity(ProgramRequest request) {
+        Faculty faculty = facultyRepo.findById(request.getFacultyId())
                 .orElseThrow(() -> new RuntimeException("Faculty not found"));
+
         return Program.builder()
-                .id(d.getId())
-                .code(d.getCode())
-                .name(d.getName())
-                .modality(d.getModality())
-                .schedule(d.getSchedule())
-                .duration(d.getDuration())
-                .degreeAwarded(d.getDegreeAwarded())
-                .status(d.getStatus())
-                .faculty(fac)
+                .code(request.getCode())
+                .name(request.getName())
+                .modality(request.getModality())
+                .schedule(request.getSchedule())
+                .duration(request.getDuration())
+                .degreeAwarded(request.getDegreeAwarded())
+                .status(request.getStatus())
+                .faculty(faculty)
                 .build();
     }
 
-    @Override public ProgramDto create(ProgramDto dto) {
-        return toDto(repo.save(toEntity(dto)));
+    private ProgramResponse toResponse(Program program) {
+        return ProgramResponse.builder()
+                .id(program.getId())
+                .code(program.getCode())
+                .name(program.getName())
+                .modality(program.getModality())
+                .schedule(program.getSchedule())
+                .duration(program.getDuration())
+                .degreeAwarded(program.getDegreeAwarded())
+                .status(program.getStatus())
+                .facultyId(program.getFaculty().getId())
+                .facultyName(program.getFaculty().getName())
+                .build();
     }
-    @Override public ProgramDto update(Long id, ProgramDto dto) {
-        Program e = repo.findById(id)
+
+    @Override
+    public ProgramResponse create(ProgramRequest request) {
+        return toResponse(repo.save(toEntity(request)));
+    }
+
+    @Override
+    public ProgramResponse update(Long id, ProgramRequest request) {
+        Program program = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Program not found"));
-        e.setCode(dto.getCode());        
-        e.setName(dto.getName());
-        e.setModality(dto.getModality());
-        e.setSchedule(dto.getSchedule());
-        e.setDuration(dto.getDuration());
-        e.setDegreeAwarded(dto.getDegreeAwarded());
-        e.setStatus(dto.getStatus());
-        e.setFaculty(facRepo.findById(dto.getFacultyId())
-                .orElseThrow(() -> new RuntimeException("Program not found")));
-        return toDto(repo.save(e));
+
+        program.setCode(request.getCode());
+        program.setName(request.getName());
+        program.setModality(request.getModality());
+        program.setSchedule(request.getSchedule());
+        program.setDuration(request.getDuration());
+        program.setDegreeAwarded(request.getDegreeAwarded());
+        program.setStatus(request.getStatus());
+        program.setFaculty(facultyRepo.findById(request.getFacultyId())
+                .orElseThrow(() -> new RuntimeException("Faculty not found")));
+
+        return toResponse(repo.save(program));
     }
-    @Override public void delete(Long id) { repo.deleteById(id); }
-    @Override public ProgramDto findById(Long id) {
-        return repo.findById(id).map(this::toDto)
+
+    @Override
+    public void delete(Long id) {
+        repo.deleteById(id);
+    }
+
+    @Override
+    public ProgramResponse findById(Long id) {
+        return repo.findById(id)
+                .map(this::toResponse)
                 .orElseThrow(() -> new RuntimeException("Program not found"));
     }
-    @Override public List<ProgramDto> findAll() {
+
+    @Override
+    public List<ProgramResponse> findAll() {
         return repo.findAll().stream()
-                .map(this::toDto)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
     

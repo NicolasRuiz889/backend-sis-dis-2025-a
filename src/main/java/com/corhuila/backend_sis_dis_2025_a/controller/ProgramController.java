@@ -1,45 +1,51 @@
 package com.corhuila.backend_sis_dis_2025_a.controller;
 
+import com.corhuila.backend_sis_dis_2025_a.dto.request.ProgramRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.ProgramResponse;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.ProgramDto;
 import com.corhuila.backend_sis_dis_2025_a.service.IProgramService;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/programs")
+@RequestMapping("/programs")
 @RequiredArgsConstructor
 public class ProgramController {
 
     private final IProgramService service;
 
     @PostMapping
-    public ProgramDto create(@RequestBody ProgramDto dto) {
-        return service.create(dto);
-    }
-
-    @GetMapping
-    public List<ProgramDto> getAll() {
-        return service.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ProgramDto getById(@PathVariable Long id) {
-        return service.findById(id);
+    public ResponseEntity<ProgramResponse> create(@Valid @RequestBody ProgramRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @PutMapping("/{id}")
-    public ProgramDto update(@PathVariable Long id, @RequestBody ProgramDto dto) {
-        return service.update(id, dto);
+    public ResponseEntity<ProgramResponse> update(@PathVariable Long id,
+                                                  @Valid @RequestBody ProgramRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProgramResponse>> getAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProgramResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

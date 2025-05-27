@@ -1,7 +1,8 @@
 // src/main/java/com/corhuila/backend_sis_dis_2025_a/service/impl/SubcategoryActivityServiceImpl.java
 package com.corhuila.backend_sis_dis_2025_a.service.impl;
 
-import com.corhuila.backend_sis_dis_2025_a.dto.SubcategoryActivityDto;
+import com.corhuila.backend_sis_dis_2025_a.dto.request.SubcategoryActivityRequest;
+import com.corhuila.backend_sis_dis_2025_a.dto.response.SubcategoryActivityResponse;
 import com.corhuila.backend_sis_dis_2025_a.entity.Category;
 import com.corhuila.backend_sis_dis_2025_a.entity.SubcategoryActivity;
 import com.corhuila.backend_sis_dis_2025_a.repository.CategoryRepository;
@@ -18,51 +19,66 @@ import java.util.stream.Collectors;
 public class SubcategoryActivityServiceImpl implements ISubcategoryActivityService {
 
     private final SubcategoryActivityRepository repo;
-    private final CategoryRepository catRepo;
+    private final CategoryRepository categoryRepo;
 
-    private SubcategoryActivityDto toDto(SubcategoryActivity e) {
-        return SubcategoryActivityDto.builder()
-                .id(e.getId())
-                .name(e.getName())
-                .description(e.getDescription())
-                .status(e.getStatus())
-                .categoryId(e.getCategory().getId())
-                .build();
-    }
-
-    private SubcategoryActivity toEntity(SubcategoryActivityDto d) {
-        Category cat = catRepo.findById(d.getCategoryId())
+    private SubcategoryActivity toEntity(SubcategoryActivityRequest request) {
+        Category category = categoryRepo.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
+
         return SubcategoryActivity.builder()
-                .id(d.getId())
-                .name(d.getName())
-                .description(d.getDescription())
-                .status(d.getStatus())
-                .category(cat)
+                .name(request.getName())
+                .description(request.getDescription())
+                .status(request.getStatus())
+                .category(category)
                 .build();
     }
 
-    @Override public SubcategoryActivityDto create(SubcategoryActivityDto dto) {
-        return toDto(repo.save(toEntity(dto)));
+    private SubcategoryActivityResponse toResponse(SubcategoryActivity entity) {
+        return SubcategoryActivityResponse.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .description(entity.getDescription())
+                .status(entity.getStatus())
+                .categoryId(entity.getCategory().getId())
+                .categoryName(entity.getCategory().getName())
+                .build();
     }
-    @Override public SubcategoryActivityDto update(Long id, SubcategoryActivityDto dto) {
-        SubcategoryActivity e = repo.findById(id)
+
+    @Override
+    public SubcategoryActivityResponse create(SubcategoryActivityRequest request) {
+        return toResponse(repo.save(toEntity(request)));
+    }
+
+    @Override
+    public SubcategoryActivityResponse update(Long id, SubcategoryActivityRequest request) {
+        SubcategoryActivity entity = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subcategory not found"));
-        e.setName(dto.getName());
-        e.setDescription(dto.getDescription());
-        e.setStatus(dto.getStatus());
-        e.setCategory(catRepo.findById(dto.getCategoryId())
+
+        entity.setName(request.getName());
+        entity.setDescription(request.getDescription());
+        entity.setStatus(request.getStatus());
+        entity.setCategory(categoryRepo.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found")));
-        return toDto(repo.save(e));
+
+        return toResponse(repo.save(entity));
     }
-    @Override public void delete(Long id) { repo.deleteById(id); }
-    @Override public SubcategoryActivityDto findById(Long id) {
-        return repo.findById(id).map(this::toDto)
+
+    @Override
+    public void delete(Long id) {
+        repo.deleteById(id);
+    }
+
+    @Override
+    public SubcategoryActivityResponse findById(Long id) {
+        return repo.findById(id)
+                .map(this::toResponse)
                 .orElseThrow(() -> new RuntimeException("Subcategory not found"));
     }
-    @Override public List<SubcategoryActivityDto> findAll() {
+
+    @Override
+    public List<SubcategoryActivityResponse> findAll() {
         return repo.findAll().stream()
-                .map(this::toDto)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 }
