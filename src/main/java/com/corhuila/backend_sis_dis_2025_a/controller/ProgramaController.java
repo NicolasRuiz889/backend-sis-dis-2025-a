@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/programas")
+@CrossOrigin(origins = "*")
 public class ProgramaController {
 
     @Autowired

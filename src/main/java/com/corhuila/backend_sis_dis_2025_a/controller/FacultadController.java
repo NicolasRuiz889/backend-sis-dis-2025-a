@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/facultades")
+@CrossOrigin(origins = "*")
 public class FacultadController {
 
     @Autowired

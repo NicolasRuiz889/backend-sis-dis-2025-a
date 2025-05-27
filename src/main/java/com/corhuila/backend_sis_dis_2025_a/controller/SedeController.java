@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sedes")
+@CrossOrigin(origins = "*")
 public class SedeController {
 
     @Autowired

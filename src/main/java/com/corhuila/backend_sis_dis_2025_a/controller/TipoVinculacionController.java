@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tipo-vinculaciones")
+@CrossOrigin(origins = "*")
 public class TipoVinculacionController {
 
     @Autowired
