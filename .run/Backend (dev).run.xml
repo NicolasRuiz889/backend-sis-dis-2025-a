@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Backend (dev)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="dev" />
+    <module name="backend-sis-dis-2025-a" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.corhuila.backend_sis_dis_2025_a.BackendSisDis2025AApplication" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
